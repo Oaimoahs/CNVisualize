@@ -16,3 +16,4 @@ Output: A set of heatmaps or more informative plots with different choices of fe
 
 **3. Requirements**
 
+The corresponding ginkgo call VCF file and the barcode list file should be input along with the 10X chromium single-cell RNA-seq bam file.
