@@ -6,18 +6,35 @@ CNVisualize
   - [X] Task 1.3: Create code structure
 - Activity 2: Build prototype I
   - Activity 2.1: Refine design to describe tasks
-    - [ ] Task 2.1.1: Break project into activities
-    - [ ] Task 2.1.2: Break project into tasks
+    - [X] Task 2.1.1: Break project into activities
+    - [X] Task 2.1.2: Break project into tasks
   - Activity 2.2: Define high-level functions
     - [ ] Task 2.2.1: Define read/create data function
     - [ ] Task 2.2.2: Define analysis function
     - [ ] Task 2.2.3: Define save output function
-  - Activity 2.3: Implement read data and save output and one feature in the analsyis
+  - Activity 2.3: Implement read data and save output and bam splitting feature in the analsyis
     - [ ] Task 2.3.1: Implement read/create data function
-    - [ ] Task 2.3.2: Implement one analysis function: compute profile score for 1 TCGA sample
-      - [ ] The first implementation of this function will be with a mockup input (like two numbers) and a simple output - the difference
-      - [ ] The next step is to have a proper input in the correct format - just that it will be a scaled up input - just a small matrix 4x2 for instance and for that I compute a simple match score again: the sum of the differences between my sample and my reference profile    
-    - [ ] Task 2.3.3: Implement save output function
-  - Activity 2.4: Test prototype 
+    - [ ] Task 2.3.2: Implement one analysis function: split the bulk bam file into single-cell bams
+      - [ ] Use a third party package `samtools` to make index and sort the bulk bam file, and write a script to split the bam file into single-cell bams by their barcode 
+    - [ ] Task 2.3.3: Implement save output function to save the sorted and splitted single-cell bams
+  - Activity 2.4: Implement genome binning feature in the analsyis
+    - [ ] Task 2.4.1: Implement binning functions by different binning method
+    - [ ] Task 2.4.2: Implement save function for the indices of the genome binning
+  - Activity 2.5: Implement counting function for number of reads in each bin
+    - [ ] Task 2.5.1: Implement the reads counting function
+      - [ ] Use `samtools view` command to count the reads in regions
+    - [ ] Task 2.5.2: Implement save function to save the count results in each bin
+  - Activity 2.6: Implement phase state assigning function for reads in each bin
+    - [ ] Task 2.6.1: Implement read vcf function
+    - [ ] Task 2.6.2: Implement assign function to assign ps to each read by comparing with the ginkgo call set vcf file
+    - [ ] Task 2.6.3: Implement save function to save the numbers of two ps reads in each bin
+  - Activity 2.7: Implement assembling function
+    - [ ] Task 2.7.1: Collect the results from the functions above and assemble them into a dataframe
+    - [ ] Task 2.7.2: Implement save function to save the dataframe
+  - Activity 2.8: Implement plotting function
+    - [ ] Task 2.8.1: Implement function to generate heatmaps
+      - [ ] Use `ggplot2` or `seaborn` packages to plot the heatmaps by feeding the dataframe
+    - [ ] Task 2.8.2: Implement save function to save the generated heatmaps
+  - Activity 2.9: Test prototype 
 - Activity 3: Build prototype II
 
