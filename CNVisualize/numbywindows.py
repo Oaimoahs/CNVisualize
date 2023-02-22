@@ -25,7 +25,6 @@ def parse_args(args):
     parser.add_argument("-i","--indir", required=True, type=str, help="input bam file dir")
     parser.add_argument("-b","--barcode", required=True, type=str, help="barcode list file, each line is a unique barcode")
     parser.add_argument("-w", "--windowsize", type=int, required=False, default=500000, help="fixed window size for binning the genome")
-    parser.add_argument("-t", "--threads", type=int, required=False, default=1, help="number of threads for multi-threading")
     parser.add_argument("-o", "--outdir", type=str, required=False, default='./', help="Running directory where to write the read number csv (default: current directory)")
     args = parser.parse_args(args)
 
@@ -40,7 +39,6 @@ def parse_args(args):
         'bampath' : args.indir,
         'bc_file' : args.barcode,
         'window_size' : args.windowsize,
-        'n_threads' : args.threads,
         'rundir' : os.path.abspath(args.outdir)
     }
 
