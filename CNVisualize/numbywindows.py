@@ -24,6 +24,7 @@ def parse_args(args):
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument("-i","--indir", required=True, type=str, help="input bam file dir")
     parser.add_argument("-b","--barcode", required=True, type=str, help="barcode list file, each line is a unique barcode")
+    parser.add_argument("-w", "--windowsize", type=int, required=False, default=500000, help="fixed window size for binning the genome")
     parser.add_argument("-t", "--threads", type=int, required=False, default=1, help="number of threads for multi-threading")
     parser.add_argument("-o", "--outdir", type=str, required=False, default='./', help="Running directory where to write the read number csv (default: current directory)")
     args = parser.parse_args(args)
@@ -38,6 +39,7 @@ def parse_args(args):
     return {
         'bampath' : args.indir,
         'bc_file' : args.barcode,
+        'window_size' : args.windowsize,
         'n_threads' : args.threads,
         'rundir' : os.path.abspath(args.outdir)
     }
@@ -48,7 +50,7 @@ def get_numreads(bam, region):
     numreads = line.strip('\n').split('\n')[1].split('\t')[3]
     return numreads
 
-def generate_df(bam_path, out_path, barcode_list):
+def generate_df(bam_path, out_path, barcode_list, windowsize):
     for bc in barcode_list:
         bam_file = os.path.join(bam_path, bc + "_sorted.bam")
         reads = []
@@ -57,9 +59,9 @@ def generate_df(bam_path, out_path, barcode_list):
             logger.info('Start %s' % chr)
             reads.append('chr'+chr)
             len = length[chromosomes.index(chr)]
-            for i in range(math.ceil(len/500000)):
-                start = i * 500000 + 1
-                end = (i + 1) * 500000
+            for i in range(math.ceil(len/windowsize)):
+                start = i * windowsize + 1
+                end = (i + 1) * windowsize
                 if end > len:
                     end = len
                 reg = chr + ':' + str(start) + '-' + str(end)
@@ -80,7 +82,7 @@ def main(args=None):
             barcode = line.strip()
             bc_list.append(barcode)
 
-    generate_df(args["bampath"], args["rundir"], bc_list)
+    generate_df(args["bampath"], args["rundir"], bc_list, args["window_size"])
 
 if __name__ == "__main__":
     main()
