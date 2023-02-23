@@ -32,8 +32,8 @@ def parse_args(args):
         raise ValueError(f"Running directory does not exists: {args.indir}")
     if not os.path.isfile(args.barcode):
         raise ValueError("barcode list file does not exist!")
-    # if not os.path.isdir(args.outdir):
-    #     raise ValueError(f"Running directory does not exists: {args.outdir}")
+    if not os.path.isdir(args.outdir):
+        raise ValueError(f"Running directory does not exists: {args.outdir}")
 
     return {
         'bampath' : args.indir,
