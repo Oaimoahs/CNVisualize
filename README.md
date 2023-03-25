@@ -5,5 +5,5 @@ For example, the heatmap will indicate the number of reads in each small binned 
 
 The tool takes a 10X chromium single-cell RNA-seq bam file, a list of barcodes, and the corresponding vcf file as input, and the output would be a set of heatmaps or more informative plots.
 
-DOWNLOAD the two files in this link and put them in data/sorted_split_bams/ folder!
+DOWNLOAD the split bam files in this link and put them in data/sorted_split_bams/ folder!
 https://www.dropbox.com/scl/fo/lcntepft4ykxddgm688d6/h?dl=0&rlkey=uhjter2meknkdmggdhen2ljqx
