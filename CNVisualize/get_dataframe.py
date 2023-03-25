@@ -29,8 +29,8 @@ def parse_args(args):
         raise ValueError(f"Running directory does not exists: {args.indir}")
     if not os.path.isfile(args.barcode):
         raise ValueError("barcode list file does not exist!")
-    if not os.path.isdir(args.outdir):
-        raise ValueError(f"Running directory does not exists: {args.outdir}")
+    # if not os.path.isdir(args.outdir):
+    #     raise ValueError(f"Running directory does not exists: {args.outdir}")
 
     return {
         'bampath' : args.indir,
@@ -66,10 +66,12 @@ def window_indices(size, chrom_sizes):
     return windows_region
 
 def generate_df(bc_path, bam_path, regions, out_path):
-    for cell in open("data/sample_barcodes.txt", "r").readlines():
+    for cell in open(bc_path, "r").readlines():
+        logger.info('Start %s' % cell.strip())
         count = []
         path = os.path.join(bam_path, cell.strip() + "_sorted.bam")
         for region in regions:
+            # logger.info('Start %s' % region)
             numreads = get_numreads(path, region)
             count.append(numreads)
         with open(out_path, 'a+') as f:
@@ -84,6 +86,7 @@ def main(args=None):
     chrom_size_dict = read_chrom_size(args["chrom_size"])
     windows_region = window_indices(args["window_size"], chrom_size_dict)
     generate_df(args["bc_file"], args["bampath"], windows_region, args["rundir"])
+    logger.info('Dataframe generated in %s' % args["rundir"])
 
 if __name__ == "__main__":
     main()
