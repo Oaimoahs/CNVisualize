@@ -2,13 +2,10 @@
 # -*- coding: utf-8 -*-
 ### extract number of reads by region windows from bam files
 
-import sys
 import os
 import logging
-import math
 import csv
 import argparse
-import pandas as pd
 
 
 FORMAT = '%(levelname)s %(asctime)-15s %(name)-20s %(message)s'
@@ -29,8 +26,8 @@ def parse_args(args):
         raise ValueError(f"Running directory does not exists: {args.indir}")
     if not os.path.isfile(args.barcode):
         raise ValueError("barcode list file does not exist!")
-    # if not os.path.isdir(args.outdir):
-    #     raise ValueError(f"Running directory does not exists: {args.outdir}")
+    if not os.path.isfile(args.chromsizes):
+        raise ValueError("chromosome size file does not exist!")
 
     return {
         'bampath' : args.indir,
@@ -71,7 +68,6 @@ def generate_df(bc_path, bam_path, regions, out_path):
         count = []
         path = os.path.join(bam_path, cell.strip() + "_sorted.bam")
         for region in regions:
-            # logger.info('Start %s' % region)
             numreads = get_numreads(path, region)
             count.append(numreads)
         with open(out_path, 'a+') as f:
