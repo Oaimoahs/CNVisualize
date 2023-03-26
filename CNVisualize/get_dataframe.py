@@ -76,7 +76,7 @@ def generate_df(bc_path, bam_path, regions, out_path):
             data_row = [cell.strip()] + count
             csv_write.writerow(data_row)
 
-def norm_num_reads(df_raw, regions_dict, save = False):
+def norm_num_reads(df_raw, regions_dict, save_fname):
     """
     This function normalizes the raw read counts by chromosomes
 
@@ -98,8 +98,8 @@ def norm_num_reads(df_raw, regions_dict, save = False):
             # writing into dataframe
             df_norm.loc[index_cell, position : position + regions_dict[chrom] - 1] = norm_reads
             position += regions_dict[chrom]
-    if save == True:
-        df_norm.to_csv('df_norm.csv', index = False)
+    save_fname = save_fname + '_norm.csv'
+    df_norm.to_csv(save_fname, index = False)
     return df_norm
 
 def main(args=None):
@@ -110,6 +110,8 @@ def main(args=None):
     windows_region = window_indices(args["window_size"], chrom_size_dict)
     generate_df(args["bc_file"], args["bampath"], windows_region, args["rundir"])
     logger.info('Dataframe generated in %s' % args["rundir"])
+    fname = args["rundir"].split('/')[-1].split('.')[0]
+    df_norm = norm_num_reads(df_raw, windows_count, fname)
 
 if __name__ == "__main__":
     main()
