@@ -38,6 +38,15 @@ def parse_args(args):
     }
 
 def read_chrom_size(path):
+    """
+    This function reads the chromosome sizes file of a reference genome, and converts it to a dictionary.
+
+    Parameter:
+        path (string): Path to the chromosome sizes file.
+
+    Return:
+        chrom_size_dict (dictionary): dictionary with chromosome indices as keys, their sizes as values, correspondingly.
+    """
     chroms = open(path, "r")
     chrom_size_dict = {}
     for line in chroms.readlines():
@@ -46,12 +55,32 @@ def read_chrom_size(path):
     return chrom_size_dict
 
 def get_numreads(bam, region):
+    """
+    This function counts the number of reads within a given genome region in a single-cell bam file.
+
+    Parameters:
+        bam (.bam): Bam file.
+        region (string): Region formatted string, e.g., 1:1-500000.
+
+    Return:
+        numreads (int): The counted number of reads within the given region of the given bam file.
+    """
     output = os.popen('samtools coverage -r %s %s' % (region, bam))
     line = output.read()
     numreads = line.strip('\n').split('\n')[1].split('\t')[3]
     return numreads
 
 def window_indices(size, chrom_sizes):
+    """
+    This function generates regions by the giving window size.
+
+    Parameters:
+        size (int): window size.
+        chrom_sizes (dictionary): dictionary with chromosome indices as keys, their sizes as values, correspondingly.
+
+    Return:
+        windows_region (list): Contains all the regions in proper format.
+    """
     chroms = list(chrom_sizes.keys())
     windows_region = []
     for chrom in chroms:
@@ -63,6 +92,15 @@ def window_indices(size, chrom_sizes):
     return windows_region
 
 def generate_df(bc_path, bam_path, regions, out_path):
+    """
+    This function generates dataframe contains the number of reads in each window of each cell.
+
+    Parameters:
+        bc_path (string): Path to the barcodes file.
+        bam_path (string): Path to the split and sorted bam files.
+        regions (list): All the regions in proper format.
+        out_path (string): Path to write the output csv file.
+    """
     for cell in open(bc_path, "r").readlines():
         logger.info('Start %s' % cell.strip())
         count = []
