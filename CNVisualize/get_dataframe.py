@@ -6,6 +6,7 @@ import os
 import logging
 import csv
 import argparse
+from sklearn import preprocessing
 
 
 FORMAT = '%(levelname)s %(asctime)-15s %(name)-20s %(message)s'
@@ -118,6 +119,32 @@ def generate_df(bc_path, bam_path, regions, out_path):
             data_row = [cell.strip()] + count
             csv_write.writerow(data_row)
 
+def norm_num_reads(df_raw, regions_dict, save_fname):
+    """
+    This function normalizes the raw read counts by chromosomes
+
+    Parameters:
+        df_raw (dataframe): a dataframe of the raw read counts
+        regions_dict (dictionary): a dictionary of the window numbers for each chromosome
+        save (boolean): whetehr to save the normalized dataframe to *.csv or not
+    """
+    min_max_scaler = preprocessing.MinMaxScaler() # Min-Max normalization 
+    df_norm = df_raw
+    for index_cell, cell in df_raw.iterrows():
+        position = 1 # skipping the first (the first is the barcode)
+        for chrom in regions_dict.keys():
+            # dividing read counts by chromosomes
+            reads = list(cell[position : position + regions_dict[chrom]])
+            # normalizing read counts
+            norm_reads = min_max_scaler.fit_transform(np.array(reads).reshape(-1, 1))
+            norm_reads = list(norm_reads.flatten())
+            # writing into dataframe
+            df_norm.loc[index_cell, position : position + regions_dict[chrom] - 1] = norm_reads
+            position += regions_dict[chrom]
+    save_fname = save_fname + '_norm.csv'
+    df_norm.to_csv(save_fname, index = False)
+    return df_norm
+
 def main(args=None):
     args = parse_args(args)
     logger.info('\n'.join(['Arguments:'] + [f'{a} : {args[a]}' for a in args]))
@@ -126,6 +153,8 @@ def main(args=None):
     windows_region, windows_count = window_indices(args["window_size"], chrom_size_dict)
     generate_df(args["bc_file"], args["bampath"], windows_region, args["rundir"])
     logger.info('Dataframe generated in %s' % args["rundir"])
+    fname = args["rundir"].split('/')[-1].split('.')[0]
+    df_norm = norm_num_reads(df_raw, windows_count, fname)
 
 if __name__ == "__main__":
     main()
