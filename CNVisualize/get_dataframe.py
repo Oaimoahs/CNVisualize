@@ -7,6 +7,8 @@ import logging
 import csv
 import argparse
 from sklearn import preprocessing
+import pandas as pd
+import numpy as np
 
 
 FORMAT = '%(levelname)s %(asctime)-15s %(name)-20s %(message)s'
@@ -106,6 +108,9 @@ def generate_df(bc_path, bam_path, regions, out_path):
         bam_path (string): Path to the split and sorted bam files.
         regions (list): All the regions in proper format.
         out_path (string): Path to write the output csv file.
+
+    Return:
+        raw_df (DataFrame): raw count dataframe.
     """
     for cell in open(bc_path, "r").readlines():
         logger.info('Start %s' % cell.strip())
@@ -118,6 +123,7 @@ def generate_df(bc_path, bam_path, regions, out_path):
             csv_write = csv.writer(f)
             data_row = [cell.strip()] + count
             csv_write.writerow(data_row)
+    return pd.read_csv(out_path, header = None)
 
 def norm_num_reads(df_raw, regions_dict, save_fname):
     """
@@ -142,7 +148,7 @@ def norm_num_reads(df_raw, regions_dict, save_fname):
             df_norm.loc[index_cell, position : position + regions_dict[chrom] - 1] = norm_reads
             position += regions_dict[chrom]
     save_fname = save_fname + '_norm.csv'
-    df_norm.to_csv(save_fname, index = False)
+    df_norm.to_csv(save_fname, index = False, header = None)
     return df_norm
 
 def main(args=None):
@@ -151,10 +157,11 @@ def main(args=None):
     
     chrom_size_dict = read_chrom_size(args["chrom_size"])
     windows_region, windows_count = window_indices(args["window_size"], chrom_size_dict)
-    generate_df(args["bc_file"], args["bampath"], windows_region, args["rundir"])
+    raw_df = generate_df(args["bc_file"], args["bampath"], windows_region, args["rundir"])
     logger.info('Dataframe generated in %s' % args["rundir"])
     fname = args["rundir"].split('/')[-1].split('.')[0]
-    df_norm = norm_num_reads(df_raw, windows_count, fname)
+    df_norm = norm_num_reads(raw_df, windows_count, fname)
+    logger.info('Dataframe normalized')
 
 if __name__ == "__main__":
     main()
