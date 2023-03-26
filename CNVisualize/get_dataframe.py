@@ -80,16 +80,21 @@ def window_indices(size, chrom_sizes):
 
     Return:
         windows_region (list): Contains all the regions in proper format.
+        windows_count (dictionary): Number of windows in each chromosome.
     """
     chroms = list(chrom_sizes.keys())
     windows_region = []
+    windows_count = {}
     for chrom in chroms:
         pos = 0
+        window_count = 1
         while pos + 1 + size < chrom_sizes[chrom]:
             windows_region.append(chrom + ":" + str(pos+1) + "-" + str(pos+size))
             pos += size
+            window_count += 1
         windows_region.append(chrom + ":" + str(pos+1) + "-" + str(chrom_sizes[chrom]))
-    return windows_region
+        windows_count[chrom] = window_count
+    return windows_region, windows_count
 
 def generate_df(bc_path, bam_path, regions, out_path):
     """
@@ -118,7 +123,7 @@ def main(args=None):
     logger.info('\n'.join(['Arguments:'] + [f'{a} : {args[a]}' for a in args]))
     
     chrom_size_dict = read_chrom_size(args["chrom_size"])
-    windows_region = window_indices(args["window_size"], chrom_size_dict)
+    windows_region, windows_count = window_indices(args["window_size"], chrom_size_dict)
     generate_df(args["bc_file"], args["bampath"], windows_region, args["rundir"])
     logger.info('Dataframe generated in %s' % args["rundir"])
 
