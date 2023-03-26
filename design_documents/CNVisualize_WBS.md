@@ -9,32 +9,28 @@ CNVisualize
     - [X] Task 2.1.1: Break project into activities
     - [X] Task 2.1.2: Break project into tasks
   - Activity 2.2: Define high-level functions
-    - [ ] Task 2.2.1: Define read/create data function
-    - [ ] Task 2.2.2: Define analysis function
-    - [ ] Task 2.2.3: Define save output function
+    - [X] Task 2.2.1: Define read/create data function
+    - [X] Task 2.2.2: Define analysis function
+    - [X] Task 2.2.3: Define save output function
   - Activity 2.3: Implement read data and save output and bam splitting feature in the analsyis
-    - [ ] Task 2.3.1: Implement read/create data function
-    - [ ] Task 2.3.2: Implement one analysis function: split the bulk bam file into single-cell bams
-      - [ ] Use a third party package `samtools` to make index and sort the bulk bam file, and write a script to split the bam file into single-cell bams by their barcode 
-    - [ ] Task 2.3.3: Implement save output function to save the sorted and splitted single-cell bams
+    - [X] Task 2.3.1: Implement read/create data function
+    - [X] Task 2.3.2: Implement one analysis function: split the bulk bam file into single-cell bams
+      - [X] Use a third party package `samtools` to make index and sort the bulk bam file, and write a script to split the bam file into single-cell bams by their barcode 
+    - [X] Task 2.3.3: Implement save output function to save the sorted and splitted single-cell bams
   - Activity 2.4: Implement genome binning feature in the analsyis
-    - [ ] Task 2.4.1: Implement binning functions by different binning method
-    - [ ] Task 2.4.2: Implement save function for the indices of the genome binning
+    - [X] Task 2.4.1: Implement binning functions by fixed-length binning
+    - [X] Task 2.4.2: Implement save function for the indices of the genome binning
   - Activity 2.5: Implement counting function for number of reads in each bin
-    - [ ] Task 2.5.1: Implement the reads counting function
-      - [ ] Use `samtools view` command to count the reads in regions
-    - [ ] Task 2.5.2: Implement save function to save the count results in each bin
-  - Activity 2.6: Implement phase state assigning function for reads in each bin
-    - [ ] Task 2.6.1: Implement read vcf function
-    - [ ] Task 2.6.2: Implement assign function to assign ps to each read by comparing with the ginkgo call set vcf file
-    - [ ] Task 2.6.3: Implement save function to save the numbers of two ps reads in each bin
-  - Activity 2.7: Implement assembling function
-    - [ ] Task 2.7.1: Collect the results from the functions above and assemble them into a dataframe
-    - [ ] Task 2.7.2: Implement save function to save the dataframe
-  - Activity 2.8: Implement plotting function
-    - [ ] Task 2.8.1: Implement function to generate heatmaps
+    - [X] Task 2.5.1: Implement the reads counting function
+      - [X] Use `samtools coverage` command to count the reads in regions
+    - [X] Task 2.5.2: Implement save function to save the count results in each bin
+  - Activity 2.6: Implement assembling function
+    - [X] Task 2.6.1: Collect the results from the functions above and assemble them into a dataframe
+    - [X] Task 2.6.2: Implement save function to save the dataframe
+  - Activity 2.7: Implement plotting function
+    - [ ] Task 2.7.1: Implement function to generate heatmaps
       - [ ] Use `ggplot2` or `seaborn` packages to plot the heatmaps by feeding the dataframe
-    - [ ] Task 2.8.2: Implement save function to save the generated heatmaps
-  - Activity 2.9: Test prototype 
+    - [ ] Task 2.7.2: Implement save function to save the generated heatmaps
+  - Activity 2.8: Test prototype 
 - Activity 3: Build prototype II
 
