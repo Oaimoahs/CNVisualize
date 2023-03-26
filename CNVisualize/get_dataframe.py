@@ -6,6 +6,7 @@ import os
 import logging
 import csv
 import argparse
+from sklearn import preprocessing
 
 
 FORMAT = '%(levelname)s %(asctime)-15s %(name)-20s %(message)s'
@@ -74,6 +75,32 @@ def generate_df(bc_path, bam_path, regions, out_path):
             csv_write = csv.writer(f)
             data_row = [cell.strip()] + count
             csv_write.writerow(data_row)
+
+def norm_num_reads(df_raw, regions_dict, save = False):
+    """
+    This function normalizes the raw read counts by chromosomes
+
+    Parameters:
+        df_raw (dataframe): a dataframe of the raw read counts
+        regions_dict (dictionary): a dictionary of the window numbers for each chromosome
+        save (boolean): whetehr to save the normalized dataframe to *.csv or not
+    """
+    min_max_scaler = preprocessing.MinMaxScaler() # Min-Max normalization 
+    df_norm = df_raw
+    for index_cell, cell in df_raw.iterrows():
+        position = 1 # skipping the first (the first is the barcode)
+        for chrom in regions_dict.keys():
+            # dividing read counts by chromosomes
+            reads = list(cell[position : position + regions_dict[chrom]])
+            # normalizing read counts
+            norm_reads = min_max_scaler.fit_transform(np.array(reads).reshape(-1, 1))
+            norm_reads = list(norm_reads.flatten())
+            # writing into dataframe
+            df_norm.loc[index_cell, position : position + regions_dict[chrom] - 1] = norm_reads
+            position += regions_dict[chrom]
+    if save == True:
+        df_norm.to_csv('df_norm.csv', index = False)
+    return df_norm
 
 def main(args=None):
     args = parse_args(args)
