@@ -1,4 +1,4 @@
-from CNVisualize import numbywindows as m
+from CNVisualize import get_dataframe as m
 
 def test_get_numreads_gen():
     bam = "./../../data/bams/ACGCCAGAGCAGTACG-1_B12_sorted.bam"
