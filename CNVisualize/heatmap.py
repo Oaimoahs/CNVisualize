@@ -6,6 +6,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 def heatmap(df, windows_count, figsize=(25, 4)):
     """
     Plots a heatmap with black vertical lines separating the chromosomes.
@@ -20,16 +21,16 @@ def heatmap(df, windows_count, figsize=(25, 4)):
     """
 
     fig = plt.figure(figsize=figsize)
-    sns.heatmap(df, cmap='YlOrRd', yticklabels=False)
+    sns.heatmap(df, cmap="YlOrRd", yticklabels=False)
 
     region_sizes = list(windows_count.values())
     line_position = 0
     for region_size in region_sizes[:-1]:
         line_position += region_size
-        plt.axvline(x=line_position, color='black', lw=1.5)
+        plt.axvline(x=line_position, color="black", lw=1.5)
 
     xticks = np.cumsum(region_sizes) - np.array(region_sizes) / 2
-    xtick_labels = ['chr' + key for key in windows_count.keys()]
+    xtick_labels = ["chr" + key for key in windows_count.keys()]
     plt.xticks(xticks, xtick_labels)
 
     return fig
