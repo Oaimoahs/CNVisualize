@@ -28,8 +28,6 @@ jobs:
         fi
     - name: Install CNVisualize
       run: |
-        git clone https://github.com/Oaimoahs/CNVisualize.git
-        cd CNVisualize/
         python -m pip install --upgrade build
         python -m build
         cd dist/
