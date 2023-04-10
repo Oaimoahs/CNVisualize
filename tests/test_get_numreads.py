@@ -8,8 +8,8 @@ def test_get_numreads():
     numreads = m.get_numreads(bam, region)
     assert (
         numreads == expected_numreads
-    ), "The number of reads in %s of this bam is %s not %s" % (
+        ), "The number of reads in %s of this bam is %s not %s" % (
         region,
         expected_numreads,
         numreads,
-    )
+        )

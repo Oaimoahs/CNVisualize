@@ -33,7 +33,7 @@ def test_window_indices():
     windows_region, _ = m.window_indices(size, chrom_size_dict)
     assert (
         len(windows_region) == expected_len_windows_region
-    ), "The number of regions is %s not %s" % (
+        ), "The number of regions is %s not %s" % (
         expected_len_windows_region,
         len(windows_region),
-    )
+        )
