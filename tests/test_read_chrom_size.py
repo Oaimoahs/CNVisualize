@@ -30,4 +30,5 @@ def test_read_chrom_size():
         "Y": 59373566
         }
     chrom_size_dict = m.read_chrom_size(path)
-    assert chrom_size_dict == expected_chrom_size_dict, "The generated dictionary is not the same as the expected one."
+    assert chrom_size_dict == expected_chrom_size_dict, \
+        "The generated dictionary is not the same as the expected one."
