@@ -28,7 +28,7 @@ def test_window_indices():
         "22": 51304566,
         "X": 155270560,
         "Y": 59373566,
-    }
+        }
     expected_len_windows_region = 633
     windows_region, _ = m.window_indices(size, chrom_size_dict)
     assert (
