@@ -46,7 +46,7 @@ jobs:
     - name: Format & lint
       run: |
         black . # first run black, then run flake8
-        # flake8 --extend-ignore E203 --max-line-length 88 .
+        flake8 --extend-ignore E203 --max-line-length 88 .
     - name: Commit and push changes
       run: |
         git add .
