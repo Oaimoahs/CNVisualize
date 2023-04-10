@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-### extract number of reads by region windows from bam files
+# extract number of reads by region windows from bam files
 
 import os
 import logging
@@ -16,13 +16,15 @@ logger = logging.getLogger(__name__)
 
 def read_chrom_size(path):
     """
-    This function reads the chromosome sizes file of a reference genome, and converts it to a dictionary.
+    This function reads the chromosome sizes file of a reference
+    genome, and converts it to a dictionary.
 
     Parameter:
         path (string): Path to the chromosome sizes file.
 
     Return:
-        chrom_size_dict (dictionary): dictionary with chromosome indices as keys, their sizes as values, correspondingly.
+        chrom_size_dict (dictionary): dictionary with chromosome 
+        indices as keys, their sizes as values, correspondingly.
     """
     chroms = open(path, "r")
     chrom_size_dict = {}
@@ -33,14 +35,16 @@ def read_chrom_size(path):
 
 def get_numreads(bam, region):
     """
-    This function counts the number of reads within a given genome region in a single-cell bam file.
+    This function counts the number of reads within a given genome 
+    region in a single-cell bam file.
 
     Parameters:
         bam (.bam): Bam file.
         region (string): Region formatted string, e.g., 1:1-500000.
 
     Return:
-        numreads (int): The counted number of reads within the given region of the given bam file.
+        numreads (int): The counted number of reads within the given 
+        region of the given bam file.
     """
     output = os.popen('samtools coverage -r %s %s' % (region, bam))
     line = output.read()
@@ -53,7 +57,8 @@ def window_indices(size, chrom_sizes):
 
     Parameters:
         size (int): window size.
-        chrom_sizes (dictionary): dictionary with chromosome indices as keys, their sizes as values, correspondingly.
+        chrom_sizes (dictionary): dictionary with chromosome indices
+        as keys, their sizes as values, correspondingly.
 
     Return:
         windows_region (list): Contains all the regions in proper format.
@@ -66,16 +71,17 @@ def window_indices(size, chrom_sizes):
         pos = 0
         window_count = 1
         while pos + 1 + size < chrom_sizes[chrom]:
-            windows_region.append(chrom + ":" + str(pos+1) + "-" + str(pos+size))
+            windows_region.append(chrom+":"+str(pos+1)+"-"+str(pos+size))
             pos += size
             window_count += 1
-        windows_region.append(chrom + ":" + str(pos+1) + "-" + str(chrom_sizes[chrom]))
+        windows_region.append(chrom+":"+str(pos+1)+"-"+str(chrom_sizes[chrom]))
         windows_count[chrom] = window_count
     return windows_region, windows_count
 
 def generate_df(bc_path, bam_path, regions, out_path):
     """
-    This function generates dataframe contains the number of reads in each window of each cell.
+    This function generates dataframe contains the number of reads 
+    in each window of each cell.
 
     Parameters:
         bc_path (string): Path to the barcodes file.
@@ -104,21 +110,19 @@ def norm_num_reads(df_raw, regions_dict, save_fname):
     This function normalizes the raw read counts by chromosomes
 
     Parameters:
-        df_raw (dataframe): a dataframe of the raw read counts
-        regions_dict (dictionary): a dictionary of the window numbers for each chromosome
-        save (boolean): whetehr to save the normalized dataframe to *.csv or not
+        df_raw (dataframe): a dataframe of the raw read counts.
+        regions_dict (dictionary): a dictionary of the window numbers 
+        for each chromosome.
+        save_fname (str): file name prefix.
     """
     min_max_scaler = preprocessing.MinMaxScaler() # Min-Max normalization 
     df_norm = df_raw
     for index_cell, cell in df_raw.iterrows():
-        position = 1 # skipping the first (the first is the barcode)
+        position = 1
         for chrom in regions_dict.keys():
-            # dividing read counts by chromosomes
             reads = list(cell[position : position + regions_dict[chrom]])
-            # normalizing read counts
             norm_reads = min_max_scaler.fit_transform(np.array(reads).reshape(-1, 1))
             norm_reads = list(norm_reads.flatten())
-            # writing into dataframe
             df_norm.loc[index_cell, position : position + regions_dict[chrom] - 1] = norm_reads
             position += regions_dict[chrom]
     save_fname = save_fname + '_norm.csv'
@@ -127,12 +131,14 @@ def norm_num_reads(df_raw, regions_dict, save_fname):
 
 def count(bampath, barcode, chrom_size, window_size, out_dir):
     """
-    This function generates dataframes from the scratch, original counts df and normalized df will be saved, and the latter one will be returned.
+    This function generates dataframes from the scratch, original counts 
+    df and normalized df will be saved, and the latter one will be returned.
 
     Parameters:
         bampath (str): input bam file directory.
         barcode (str): barcode list file path, each line is a unique barcode.
-        chrom_size (str): chromosome size file for the reference genome, each line is a chromosome and its size.
+        chrom_size (str): chromosome size file for the reference genome, each 
+        line is a chromosome and its size.
         window_size (int): fixed window size for binning the genome.
         out_dir (str): Running directory where to write the read number csv.
 

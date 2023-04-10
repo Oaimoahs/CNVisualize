@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-### Plot reads number in small bins for multiple samples as a heatmap
+# Plot reads number in small bins for multiple samples as a heatmap
 
 import numpy as np
-import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
