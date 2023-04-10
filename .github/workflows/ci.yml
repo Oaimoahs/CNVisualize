@@ -26,6 +26,14 @@ jobs:
         if [ -f requirements.txt ]; then
             pip install -r requirements.txt
         fi
+    - name: Install CNVisualize
+      run: |
+        git clone https://github.com/Oaimoahs/CNVisualize.git
+        cd CNVisualize/
+        python -m pip install --upgrade build
+        python -m build
+        cd dist/
+        pip install CNVisualize_project-0.1.0.tar.gz
     - name: Test with pytest
       run: |
         pytest .
