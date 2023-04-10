@@ -1,7 +1,7 @@
-from CNVisualize import get_dataframe as m
+import CNVisualize.count as m
 
-def test_get_numreads_gen():
-    bam = "./../../data/bams/ACGCCAGAGCAGTACG-1_B12_sorted.bam"
+def test_get_numreads():
+    bam = "/Users/shaomiao/Desktop/BIOINF576/CNVisualize/data/sorted_split_bams/ACGCCAGAGCAGTACG-1_B12_sorted.bam"
     region = "1:500001-1000000"
     expected_numreads = "439"
     numreads = m.get_numreads(bam, region)

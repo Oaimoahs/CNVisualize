@@ -5,7 +5,6 @@
 import os
 import logging
 import csv
-import argparse
 from sklearn import preprocessing
 import pandas as pd
 import numpy as np
@@ -14,31 +13,6 @@ import numpy as np
 FORMAT = '%(levelname)s %(asctime)-15s %(name)-20s %(message)s'
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
-
-def parse_args(args):
-    description = "Extract number of reads by region windows from bam files."
-    parser = argparse.ArgumentParser(description=description)
-    parser.add_argument("-i","--indir", required=True, type=str, help="input bam file dir")
-    parser.add_argument("-b","--barcode", required=True, type=str, help="barcode list file, each line is a unique barcode")
-    parser.add_argument("-c","--chromsizes", required=True, type=str, help="chromosome size file for the reference genome, each line is a chromosome")
-    parser.add_argument("-w", "--windowsize", type=int, required=False, default=500000, help="fixed window size for binning the genome")
-    parser.add_argument("-o", "--outdir", type=str, required=False, default='./', help="Running directory where to write the read number csv (default: current directory)")
-    args = parser.parse_args(args)
-
-    if not os.path.isdir(args.indir):
-        raise ValueError(f"Running directory does not exists: {args.indir}")
-    if not os.path.isfile(args.barcode):
-        raise ValueError("barcode list file does not exist!")
-    if not os.path.isfile(args.chromsizes):
-        raise ValueError("chromosome size file does not exist!")
-
-    return {
-        'bampath' : args.indir,
-        'bc_file' : args.barcode,
-        'chrom_size' : args.chromsizes,
-        'window_size' : args.windowsize,
-        'rundir' : os.path.abspath(args.outdir)
-    }
 
 def read_chrom_size(path):
     """
@@ -151,17 +125,36 @@ def norm_num_reads(df_raw, regions_dict, save_fname):
     df_norm.to_csv(save_fname, index = False, header = None)
     return df_norm
 
-def main(args=None):
-    args = parse_args(args)
+def count(bampath, barcode, chrom_size, window_size, out_dir):
+    """
+    This function generates dataframes from the scratch, original counts df and normalized df will be saved, and the latter one will be returned.
+
+    Parameters:
+        bampath (str): input bam file directory.
+        barcode (str): barcode list file path, each line is a unique barcode.
+        chrom_size (str): chromosome size file for the reference genome, each line is a chromosome and its size.
+        window_size (int): fixed window size for binning the genome.
+        out_dir (str): Running directory where to write the read number csv.
+
+    Return:
+        df_norm (pd.DataFrame): The normalized DataFrame.
+    """
+    args = {
+        'bampath' : os.path.abspath(bampath),
+        'bc_file' : os.path.abspath(barcode),
+        'chrom_size' : os.path.abspath(chrom_size),
+        'window_size' : window_size,
+        'rundir' : os.path.abspath(out_dir)
+        }
+    
     logger.info('\n'.join(['Arguments:'] + [f'{a} : {args[a]}' for a in args]))
     
     chrom_size_dict = read_chrom_size(args["chrom_size"])
     windows_region, windows_count = window_indices(args["window_size"], chrom_size_dict)
     raw_df = generate_df(args["bc_file"], args["bampath"], windows_region, args["rundir"])
     logger.info('Dataframe generated in %s' % args["rundir"])
-    fname = args["rundir"].split('/')[-1].split('.')[0]
+    fname = args["rundir"].split('.csv')[0]
     df_norm = norm_num_reads(raw_df, windows_count, fname)
     logger.info('Dataframe normalized')
 
-if __name__ == "__main__":
-    main()
+    return df_norm
